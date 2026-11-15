@@ -38,7 +38,7 @@ const site = {
   announcement: "",
   // Home page: the line under the name.
   tagline: "A private collection of signature colognes and luxury perfumes, each chosen for its character, its depth and the impression it leaves behind.",
-  // Home page: the three pillars under "The house".
+  // Home page: the three pillars under "The house". `icon` names the picture: public/icon-<icon>.webp.
   highlights: [
     { icon: "cologne", title: "Signature Colognes", text: "Confident, composed scents with presence: fresh citrus openings, warm woods and deep amber finishes." },
     { icon: "perfume", title: "Luxury Perfumes", text: "Rich, layered perfumes built around florals, musks and rare resins that unfold slowly through the day." },

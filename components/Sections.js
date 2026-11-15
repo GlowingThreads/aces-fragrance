@@ -1,6 +1,5 @@
 import Link from "next/link";
 import site from "../site.config";
-import Icon from "./Icon";
 
 // Blocks shared by the home page and the About page.
 
@@ -9,13 +8,14 @@ export function Flourish() {
   return <span className="flourish" aria-hidden="true"><i /></span>;
 }
 
-// The three pillars of the house.
+// The three pillars of the house. Each carries a small picture in a gold ring: public/icon-<name>.webp,
+// where <name> is the `icon` given in site.config.js (transparent copies of assets/originals/icon-*.jpg).
 export function Highlights() {
   return (
     <ul className="features">
       {site.highlights.map((h) => (
         <li key={h.title} className="reveal">
-          <Icon name={h.icon} />
+          <span className="medallion"><img src={`/icon-${h.icon}.webp`} alt="" loading="lazy" /></span>
           <h3>{h.title}</h3>
           <p>{h.text}</p>
         </li>
