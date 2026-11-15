@@ -100,7 +100,8 @@ export default async function Shop({ searchParams }) {
           <p>Our catalog is not responding right now. Please try again in a moment, or call us at {site.phone}.</p>
           <a className="btn small" href={href(active?.id)}>Try again</a>
         </div>
-      ) : !collection.root ? (
+      ) : !collection.root || (items.length === 0 && !q && !active) ? (
+        // The category does not exist yet, or it exists but holds no products so far.
         <div className="notice">
           <h2>The collection is being prepared</h2>
           <p>Our fragrances will appear here shortly. Please visit again soon.</p>

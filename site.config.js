@@ -11,9 +11,10 @@ const site = {
   scriptHost: "app.business.shop",
   // The ONE Lightspeed category this site sells from. Only products inside it (or inside its subcategories)
   // are ever shown, searched or opened here; the rest of the account's catalog stays invisible.
-  // Use the category's exact name, or its numeric ID (safer if you may rename it later).
+  // Use the category's numeric ID (it keeps working if the category is renamed) or its exact name.
+  // 209402405 is the "Ace's Fragrance" category in the Lightspeed admin.
   // Its subcategories (for example "Colognes" and "Perfumes") become the collections on this site.
-  collection: process.env.ECWID_FRAGRANCE_CATEGORY || "Aces Fragrance",
+  collection: process.env.ECWID_FRAGRANCE_CATEGORY || "209402405",
 
   url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000", // your live domain, e.g. https://acesfragrance.ca
   currency: "CAD",

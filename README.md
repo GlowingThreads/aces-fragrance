@@ -11,7 +11,8 @@ Lightspeed eCom (Ecwid) account.
 
 ## Adding fragrances (in Lightspeed)
 
-1. Create a category named **Aces Fragrance** (or set `ECWID_FRAGRANCE_CATEGORY` to another name or ID).
+1. The site sells from the **Ace's Fragrance** category (ID 209402405, set in `site.config.js`). To use a
+   different one, change it there or set `ECWID_FRAGRANCE_CATEGORY` to another name or ID.
 2. Optionally add subcategories inside it, such as **Colognes** and **Perfumes**. They become the collections
    on the site, and a photo on a subcategory becomes its tile picture.
 3. Create one product per scent and assign it to that category or one of its subcategories.
