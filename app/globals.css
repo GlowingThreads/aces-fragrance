@@ -2,7 +2,7 @@
    The look borrows from fine perfume packaging: engraved gold capitals, hairline gold rules, sharp
    corners, generous space and warm, low light. Brown is only ever used quietly, as depth behind the gold.
    Sections: 1 tokens, 2 base, 3 layout and surfaces, 4 buttons and forms, 5 header, footer and page banner,
-   6 home, 7 shop, 8 product page, 9 bag, 10 other pages, 11 motion. */
+   6 home, 7 shop, 8 product page, 9 bag (and the opening curtain), 10 other pages (and the gold thread), 11 motion. */
 
 /* 1. Tokens */
 :root {
@@ -288,7 +288,8 @@ input::placeholder { color: var(--muted); }
 /* The artwork leans a few degrees toward the cursor (--tx, --ty come from components/Effects.js) */
 .hero-art-wrap { width: min(100%, 460px); justify-self: center; transform: perspective(900px) rotateY(calc(var(--tx, 0) * 6deg)) rotateX(calc(var(--ty, 0) * -4deg)); transition: transform 0.6s ease-out; }
 .hero-art { position: relative; width: 100%; }
-.hero-bottle { position: relative; width: 100%; display: block; filter: drop-shadow(0 30px 50px rgba(0, 0, 0, 0.7)); }
+.hero-bottle { position: relative; }
+.hero-bottle svg { width: 100%; display: block; filter: drop-shadow(0 30px 50px rgba(0, 0, 0, 0.7)); }
 /* Sunburst: a looping video of light, centred behind the bottle. "screen" blending lets only the light show
    against the black. Two things keep the bottle from getting lost in it: the mask dims the bright core
    directly behind the glass (so the rays read as a halo around the bottle), and the filter recolours
@@ -315,6 +316,16 @@ input::placeholder { color: var(--muted); }
    and the filter warms the grey vapour to a soft gold. */
 .mist { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; mask-image: linear-gradient(180deg, transparent 0%, #000 24%, #000 70%, transparent 100%); }
 .mist video { width: 100%; height: 100%; object-fit: cover; opacity: 0.36; mix-blend-mode: screen; filter: sepia(1) saturate(1.5) hue-rotate(-12deg) brightness(0.95); }
+/* Gold dust: tiny drifting motes drawn by components/Dust.js, above the mist and behind the text */
+.dust { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }
+/* The sweep of light across the bottle (see "sheen" in the motion section). The element sits exactly over
+   the bottle picture and is cut to the bottle's own outline, so the light only ever touches glass and gold.
+   Its background is a slanted band of light, three times as wide as the bottle, that slides across. */
+.hero-sheen {
+  position: absolute; left: 16.9%; top: 7.78%; width: 66.2%; height: 86.67%; pointer-events: none; opacity: 0;
+  background: linear-gradient(108deg, transparent 42%, rgba(255, 246, 214, 0.75) 50%, transparent 58%) 150% 0 / 300% 100% no-repeat;
+  -webkit-mask: url("/flacon.webp") center / 100% 100% no-repeat; mask: url("/flacon.webp") center / 100% 100% no-repeat;
+}
 @media (max-width: 860px) {
   .hero { min-height: 0; text-align: center; }
   .hero-inner { grid-template-columns: 1fr; }
@@ -574,6 +585,16 @@ input::placeholder { color: var(--muted); }
 /* Lightspeed's own cart and checkout are designed for a light background, so they sit on an ivory card. */
 .ecwid-host { --fill: linear-gradient(#fbf8f1, #fbf8f1); --rim: var(--edge-hi); color: #000; padding: clamp(1rem, 3vw, 2rem); min-height: 320px; }
 
+/* Opening curtain (components/Curtain.js). Hidden by default; the motion section switches it on. */
+.curtain { display: none; position: fixed; inset: 0; z-index: 200; place-items: center; pointer-events: none; }
+.curtain-panel { position: absolute; top: 0; bottom: 0; width: 50.5%; background: #000; }
+.curtain-panel.left { left: 0; background: radial-gradient(ellipse 90% 60% at 100% 50%, #1c110a, #000 75%); }
+.curtain-panel.right { right: 0; background: radial-gradient(ellipse 90% 60% at 0% 50%, #1c110a, #000 75%); }
+.curtain-mark { position: relative; display: grid; justify-items: center; gap: var(--s5); }
+.curtain-mark img { width: auto; height: clamp(5.5rem, 14vw, 8rem); filter: drop-shadow(0 0 40px rgba(201, 164, 92, 0.5)); }
+.curtain-line { width: min(15rem, 60vw); height: 1px; background: linear-gradient(90deg, transparent, var(--gold-hi), transparent); }
+.curtain-name { font: 700 clamp(1rem, 3.2vw, 1.5rem) var(--font-display), serif; letter-spacing: 0.34em; margin-right: -0.34em; text-transform: uppercase; background: var(--foil); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
 /* 10. Other pages */
 .lost { min-height: 72vh; display: grid; place-content: center; justify-items: center; gap: var(--s4); text-align: center; padding-block: var(--section); }
 .lost .emblem { margin-bottom: var(--s4); filter: drop-shadow(0 0 50px rgba(201, 164, 92, 0.45)); }
@@ -592,7 +613,21 @@ input::placeholder { color: var(--muted); }
 .map { width: 100%; min-height: 400px; height: 100%; border: 1px solid var(--line-hi); filter: grayscale(0.55) sepia(0.22) brightness(0.9) contrast(1.05); }
 @media (max-width: 760px) { .split, .find { grid-template-columns: 1fr; } }
 
-/* 11. Motion: the hero mist video (see .mist), the floating flacon and the burst of light behind it, page titles,
+/* The gold thread (components/Thread.js): a faint track down the left margin, a brighter line that grows
+   as far as the reader has scrolled (--reach), and a diamond at its tip. Each section heading has a
+   matching diamond in the same margin. Only on wide screens, where the margin exists. */
+main { position: relative; }
+.thread, .section-head::before { display: none; }
+@media (min-width: 1340px) {
+  .thread { display: block; position: absolute; top: 0; bottom: 0; left: calc((100% - 1200px) / 2 - 2.75rem); width: 1px; pointer-events: none; background: linear-gradient(180deg, transparent, var(--line) 6rem, var(--line) calc(100% - 6rem), transparent); }
+  .thread i { position: absolute; top: 0; left: 0; width: 1px; height: var(--reach, 0px); background: linear-gradient(180deg, transparent, var(--gold) 8rem, var(--gold-hi)); }
+  .thread i::after { content: ""; position: absolute; left: -3px; bottom: -3px; width: 7px; height: 7px; rotate: 45deg; background: var(--foil-solid); box-shadow: 0 0 14px 2px rgba(243, 223, 166, 0.7); }
+  .section-head { position: relative; }
+  .section-head::before { content: ""; display: block; position: absolute; left: calc(-2.75rem - 4px); bottom: -5px; width: 9px; height: 9px; rotate: 45deg; background: var(--black); border: 1px solid var(--gold); }
+  .section-head.centered::before { bottom: auto; top: 0.3rem; }
+}
+
+/* 11. Motion: the opening curtain, the hero mist video (see .mist), gold dust, the floating flacon with its sweep of light and the burst behind it, page titles,
    the drifting strip of scent notes, a soft fade between pages, hover and cursor-light effects on buttons, cards
    and tiles, the bag-count bump, and sections rising gently as they scroll into view (only in browsers that
    support it). Everything is slow and unhurried, and all of it is switched off for visitors who ask for reduced motion. */
@@ -602,6 +637,15 @@ input::placeholder { color: var(--muted); }
 @keyframes page-in { from { opacity: 0; transform: translateY(10px); } }
 /* The flacon drifts up and down very slowly. */
 @keyframes float { from { transform: translateY(-7px); } to { transform: translateY(7px); } }
+/* Sheen: every nine seconds a band of light crosses the bottle from left to right. */
+@keyframes sheen { 0%, 62% { background-position: 150% 0; opacity: 0; } 66%, 88% { opacity: 1; } 92%, 100% { background-position: -50% 0; opacity: 0; } }
+/* Opening curtain: the mark fades in and out, a gold line grows beneath it, the two panels part, and
+   finally the whole curtain is switched off so it can never block the page. */
+@keyframes curtain-mark { 0% { opacity: 0; transform: scale(0.94); } 30%, 66% { opacity: 1; transform: none; } 84%, 100% { opacity: 0; transform: scale(1.05); } }
+@keyframes curtain-line { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes curtain-left { to { transform: translateX(-101%); } }
+@keyframes curtain-right { to { transform: translateX(101%); } }
+@keyframes curtain-off { to { visibility: hidden; } }
 /* The bag count gives a small bump when it changes. */
 @keyframes bump { 40% { transform: scale(1.45); } }
 /* Loading placeholders: the band of light moves across. */
@@ -611,6 +655,13 @@ input::placeholder { color: var(--muted); }
   .strip-track { animation: marquee 90s linear infinite; }
   .page-in { animation: page-in 0.6s ease-out; }
   .hero-bottle { animation: float 8s ease-in-out infinite alternate; }
+  .hero-sheen { animation: sheen 9s ease-in-out 3.5s infinite; }
+  /* The curtain only exists on the first page of a visit, and only for visitors who are happy with motion. */
+  html:not([data-intro="seen"]) .curtain { display: grid; animation: curtain-off 0s linear 3s forwards; }
+  .curtain-mark { animation: curtain-mark 2.3s ease-out both; }
+  .curtain-line { animation: curtain-line 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.45s both; }
+  .curtain-panel.left { animation: curtain-left 1.1s cubic-bezier(0.7, 0, 0.2, 1) 1.85s forwards; }
+  .curtain-panel.right { animation: curtain-right 1.1s cubic-bezier(0.7, 0, 0.2, 1) 1.85s forwards; }
   .badge { animation: bump 0.45s ease-out; }
   .skeleton .ph, .sk-line { animation: shimmer 2s linear infinite; }
   .strip:hover .strip-track { animation-play-state: paused; }

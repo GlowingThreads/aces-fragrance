@@ -2,12 +2,14 @@ import "./globals.css";
 import { preload } from "react-dom";
 import { Cinzel, Cormorant_Garamond, Jost } from "next/font/google";
 import site from "../site.config";
-import { ecwidScript } from "../lib/inline";
+import { introScript, ecwidScript } from "../lib/inline";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import EcwidScript from "../components/EcwidScript";
 import Effects from "../components/Effects";
 import Toaster from "../components/Toaster";
+import Curtain from "../components/Curtain";
+import Thread from "../components/Thread";
 
 // Cinzel: engraved Roman capitals for the name and page titles. Cormorant Garamond: a fine serif for
 // headings and italic accents. Jost: a clean, quiet sans-serif for everything else.
@@ -32,15 +34,17 @@ export default function RootLayout({ children }) {
   // Ask the browser to start fetching the title lettering outlines straight away (used by lib/goldText.js).
   preload("/fonts/cinzel-700.json", { as: "fetch", crossOrigin: "anonymous" });
   return (
-    <html lang="en-CA" className={`${display.variable} ${serif.variable} ${body.variable}`}>
+    // suppressHydrationWarning: the intro script below may add data-intro to <html> before React starts.
+    <html lang="en-CA" className={`${display.variable} ${serif.variable} ${body.variable}`} suppressHydrationWarning>
       <body>
-        {/* First thing in <body>, so it runs before Ecwid's script. It is deliberately not in <head>:
+        {/* First thing in <body>, so it runs before anything is drawn. It is deliberately not in <head>:
             hosts such as Netlify add their own tags there, which React must not be asked to match. */}
-        {site.storeId && <script dangerouslySetInnerHTML={{ __html: ecwidScript }} />}
+        <script dangerouslySetInnerHTML={{ __html: introScript + (site.storeId ? ecwidScript : "") }} />
+        <Curtain />
         <div id="site">
           <a href="#main" className="skip">Skip to content</a>
           <Header />
-          <main id="main" tabIndex={-1}>{children}</main>
+          <main id="main" tabIndex={-1}><Thread />{children}</main>
           <Footer />
         </div>
         <Toaster />

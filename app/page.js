@@ -3,6 +3,7 @@ import site from "../site.config";
 import { getCollection, getProducts, topLevel } from "../lib/ecwid";
 import HeroArt from "../components/HeroArt";
 import Mist from "../components/Mist";
+import Dust from "../components/Dust";
 import Title from "../components/Title";
 import Stars from "../components/Stars";
 import Icon from "../components/Icon";
@@ -22,6 +23,7 @@ export default async function Home() {
       {/* Hero */}
       <section className="hero">
         <Mist />
+        <Dust />
         <div className="wrap hero-inner">
           <div className="hero-copy">
             <p className="eyebrow">{site.slogan}</p>
