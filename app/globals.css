@@ -1,0 +1,615 @@
+/* Aces Fragrance: polished gold on black, with a whisper of rich dark brown.
+   The look borrows from fine perfume packaging: engraved gold capitals, hairline gold rules, sharp
+   corners, generous space and warm, low light. Brown is only ever used quietly, as depth behind the gold.
+   Sections: 1 tokens, 2 base, 3 layout and surfaces, 4 buttons and forms, 5 header, footer and page banner,
+   6 home, 7 shop, 8 product page, 9 bag, 10 other pages, 11 motion. */
+
+/* 1. Tokens */
+:root {
+  --black: #000;
+  --ink: #0a0806;                 /* raised surfaces: black with a trace of warmth */
+  --gold: #c9a45c;
+  --gold-hi: #f3dfa6;             /* highlights and important text */
+  --gold-lo: #8f7238;             /* quiet gold for rules and small marks */
+  --cream: #ebe2d0;               /* body text: warm ivory, easier on the eye than white */
+  --muted: #a99d86;               /* secondary text; light enough to read on the brown panels */
+  --brown: #2a1a10;               /* the rich dark brown accent */
+  --brown-deep: #130b07;
+  --brown-glow: #5a3418;
+  --line: rgba(201, 164, 92, 0.18);
+  --line-hi: rgba(201, 164, 92, 0.46);
+
+  /* Gold foil for text: pale at the top, deep at the bottom */
+  --foil: linear-gradient(180deg, #fff6d6 0%, #ecd292 32%, #c39a4e 62%, #8a6628 100%);
+  /* Gold foil for solid shapes such as buttons: a bright top, a darker band, then light again */
+  --foil-solid: linear-gradient(180deg, #f9ecc0 0%, #dfbe73 34%, #ab853c 54%, #caa55d 72%, #f3dfa6 100%);
+  /* The hairline gold edge around panels: bright corners, quiet middle */
+  --edge: linear-gradient(135deg, rgba(243, 223, 166, 0.85) 0%, rgba(201, 164, 92, 0.3) 22%, rgba(201, 164, 92, 0.1) 50%, rgba(201, 164, 92, 0.32) 78%, rgba(243, 223, 166, 0.65) 100%);
+  --edge-hi: linear-gradient(135deg, #fff6d6 0%, rgba(201, 164, 92, 0.8) 25%, rgba(201, 164, 92, 0.3) 50%, rgba(201, 164, 92, 0.8) 75%, #fff6d6 100%);
+  /* Fills for panels: near-black lacquer, and the same warmed with brown */
+  --lacquer: linear-gradient(160deg, #14100c 0%, #0a0806 48%, #110a07 100%);
+  --lacquer-brown: linear-gradient(160deg, #2a1a10 0%, #150d08 46%, #080605 100%);
+  --shadow: inset 0 1px 0 rgba(243, 223, 166, 0.07), 0 30px 60px -34px rgba(0, 0, 0, 0.95);
+  /* Four fine gold corner marks, drawn just inside a panel (used by the ::after of framed panels) */
+  --corners:
+    linear-gradient(var(--gold), var(--gold)) left top / 18px 1px no-repeat, linear-gradient(var(--gold), var(--gold)) left top / 1px 18px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) right top / 18px 1px no-repeat, linear-gradient(var(--gold), var(--gold)) right top / 1px 18px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) left bottom / 18px 1px no-repeat, linear-gradient(var(--gold), var(--gold)) left bottom / 1px 18px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) right bottom / 18px 1px no-repeat, linear-gradient(var(--gold), var(--gold)) right bottom / 1px 18px no-repeat;
+
+  --r: 2px;                       /* corners are kept almost square, like a cut label */
+
+  /* Type scale */
+  --t-xs: 0.72rem;
+  --t-sm: 0.9rem;
+  --t-md: 1.02rem;
+  --t-lg: clamp(1.1rem, 1.02rem + 0.4vw, 1.25rem);
+  --t-xl: clamp(1.45rem, 1.25rem + 0.9vw, 1.9rem);
+  --t-2xl: clamp(2rem, 1.5rem + 2.4vw, 3.1rem);
+  --t-hero: clamp(2.5rem, 1rem + 6.4vw, 5.75rem);
+
+  /* Spacing scale */
+  --s1: 0.25rem; --s2: 0.5rem; --s3: 0.75rem; --s4: 1rem; --s5: 1.5rem; --s6: 2rem; --s7: 3rem;
+  --section: clamp(3.5rem, 2rem + 7vw, 7rem);
+}
+
+/* 2. Base */
+*, *::before, *::after { box-sizing: border-box; }
+html { color-scheme: dark; -webkit-text-size-adjust: 100%; scroll-padding-top: 6rem; background: var(--black); }
+body {
+  margin: 0; color: var(--cream);
+  font: 300 var(--t-md) / 1.7 var(--font-body), system-ui, sans-serif;
+  /* Two very soft pools of warm light so the page is never flat black: gold top left, brown lower right */
+  background:
+    radial-gradient(60rem 40rem at -10% -10%, rgba(201, 164, 92, 0.07), transparent 60%),
+    radial-gradient(70rem 50rem at 110% 60%, rgba(90, 52, 24, 0.2), transparent 60%),
+    var(--black);
+  background-attachment: fixed;
+}
+/* A very fine grain over the whole page, like uncoated paper */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 0.9 0 0 0 0 0.7 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+h1, h2, h3 { font-family: var(--font-serif), Georgia, serif; font-weight: 500; line-height: 1.12; margin: 0 0 0.5em; text-wrap: balance; }
+h1 { font-size: var(--t-2xl); }
+h2 { font-size: var(--t-xl); color: var(--gold-hi); }
+h3 { font-size: var(--t-lg); color: var(--gold-hi); }
+p { margin: 0 0 var(--s4); }
+em { font-family: var(--font-serif), Georgia, serif; }
+a { color: inherit; text-decoration: none; }
+p a, address a, .desc a { text-decoration: underline; text-underline-offset: 0.25em; text-decoration-thickness: 1px; text-decoration-color: var(--line-hi); }
+p a:hover, address a:hover { color: var(--gold-hi); text-decoration-color: currentColor; }
+address { font-style: normal; margin-bottom: var(--s4); }
+img { max-width: 100%; height: auto; display: block; }
+main:focus { outline: none; }
+:focus-visible { outline: 1px solid var(--gold-hi); outline-offset: 4px; }
+::selection { background: var(--gold); color: #000; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.skip { position: absolute; left: var(--s4); top: -4rem; z-index: 50; padding: var(--s2) var(--s4); background: var(--gold-hi); color: var(--black); font-weight: 500; }
+.skip:focus { top: var(--s2); }
+.metal { background: var(--foil); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.fine { color: var(--muted); font-size: var(--t-sm); }
+/* Small gold label above a heading */
+.eyebrow { font: 400 var(--t-xs) var(--font-body), sans-serif; letter-spacing: 0.34em; text-transform: uppercase; color: var(--gold); margin-bottom: var(--s4); }
+.icon { width: 1.75rem; height: 1.75rem; flex: none; }
+.emblem { flex: none; display: block; }
+/* Ornament: a small gold diamond between two fine rules */
+.flourish { display: flex; align-items: center; justify-content: center; gap: var(--s3); margin-bottom: var(--s5); }
+.flourish::before, .flourish::after { content: ""; width: 3.5rem; height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
+.flourish::after { transform: scaleX(-1); }
+.flourish i { width: 7px; height: 7px; rotate: 45deg; background: var(--foil-solid); box-shadow: 0 0 12px rgba(243, 223, 166, 0.6); }
+
+/* Page titles (components/Title.js). This is the plain heading: engraved gold capitals. On most pages
+   lib/goldText.js then draws the same words as 3D polished gold on a canvas placed exactly on top,
+   and the plain text is made invisible (but stays in the page for screen readers and search engines). */
+.title-wrap { position: relative; width: fit-content; max-width: 100%; }
+.title { font-family: var(--font-display), serif; font-weight: 700; letter-spacing: 0.04em; line-height: 1.1; margin: 0; }
+.title .line { display: block; }
+.title .w {
+  color: transparent; background: var(--foil);
+  -webkit-background-clip: text; background-clip: text; transition: opacity 0.35s;
+}
+.title-3d { position: absolute; pointer-events: none; opacity: 0; transition: opacity 0.35s; filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.75)); }
+.is-3d .title-3d { opacity: 1; }
+.is-3d .title .w { opacity: 0; }
+/* When moving between pages the gold is already loaded, so it appears at once with no fade. */
+.instant .title-3d, .instant .title .w { transition: none; }
+
+/* 3. Layout and surfaces */
+.wrap { width: min(1200px, 100% - 2.5rem); margin-inline: auto; }
+.section { padding-block: var(--section); }
+.actions { display: flex; gap: var(--s4); flex-wrap: wrap; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: var(--s5); }
+
+/* Lacquer: the shared look of every panel. A near-black fill, a hairline gold edge (drawn as a gradient
+   border), square corners and a deep shadow. The two backgrounds are the fill and, behind it, the edge. */
+.panel, .notice, .card, .search, .buy, .features li, .ritual li, .tile, .visit, .hero-facts, .ecwid-host {
+  --fill: var(--lacquer);  /* what the panel is filled with */
+  --rim: var(--edge);      /* its hairline gold edge */
+  position: relative; border: 1px solid transparent; border-radius: var(--r);
+  /* Four layers, top first: a soft candle glow where the cursor is, the fill, a bright spot on the edge
+     nearest the cursor, and the gold edge. --mx and --my are set by components/Effects.js; until
+     the cursor is over the panel they sit far off screen, so no light shows. */
+  background:
+    radial-gradient(20rem circle at var(--mx, -99rem) var(--my, -99rem), rgba(243, 223, 166, 0.09), transparent 62%) padding-box,
+    var(--fill) padding-box,
+    radial-gradient(22rem circle at var(--mx, -99rem) var(--my, -99rem), rgba(255, 246, 214, 0.95), transparent 55%) border-box,
+    var(--rim) border-box;
+  box-shadow: var(--shadow);
+}
+/* Framed panels also carry four fine gold corner marks, set just inside the edge */
+.panel::after, .notice::after, .buy::after, .features li::after, .ritual li::after, .visit-info::after {
+  content: ""; position: absolute; inset: 7px; pointer-events: none; background: var(--corners); opacity: 0.75;
+}
+.panel, .notice { padding: clamp(1.5rem, 3vw, 2.25rem); --fill: var(--lacquer-brown); }
+.notice { margin-bottom: var(--s5); text-align: center; }
+.notice .btn { margin-top: var(--s3); }
+.notice > :last-child, .panel > :last-child { margin-bottom: 0; }
+.panel h2 { display: flex; align-items: center; gap: var(--s3); }
+.panel h2 .icon { color: var(--gold); }
+.panel h2:not(:first-child) { margin-top: var(--s6); }
+.panel .hours { margin-bottom: var(--s5); }
+
+/* 4. Buttons and forms */
+.btn {
+  position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; gap: var(--s2);
+  min-height: 3.1rem; padding: 0.7rem 2.1rem; border-radius: var(--r); border: 1px solid rgba(255, 246, 214, 0.85);
+  background: var(--foil-solid); color: #150d06;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -2px 3px rgba(60, 36, 8, 0.35), 0 0 0 1px rgba(0, 0, 0, 0.7), 0 14px 26px -14px rgba(0, 0, 0, 0.9);
+  font: 500 var(--t-xs) var(--font-body), sans-serif; letter-spacing: 0.24em; text-transform: uppercase; cursor: pointer; text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+}
+/* A band of light that crosses the button on hover, like light moving over foil */
+.btn::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.8) 50%, transparent 62%) no-repeat 160% 0 / 250% 100%; transition: background-position 0.7s; }
+.btn:hover::after { background-position: -60% 0; }
+.btn:hover { filter: brightness(1.06); transform: translateY(-1px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -2px 3px rgba(60, 36, 8, 0.35), 0 0 0 1px rgba(0, 0, 0, 0.7), 0 18px 34px -14px rgba(201, 164, 92, 0.5); }
+.btn:active { transform: none; }
+.btn.ghost {
+  border-color: transparent; color: var(--gold-hi);
+  background: linear-gradient(180deg, rgba(20, 14, 9, 0.85), rgba(8, 6, 4, 0.85)) padding-box, var(--edge-hi) border-box;
+  box-shadow: 0 14px 26px -16px rgba(0, 0, 0, 0.9);
+}
+.btn.ghost::after { opacity: 0.2; }
+.btn.ghost:hover { background: linear-gradient(180deg, #2a1a10, #130b07) padding-box, var(--edge-hi) border-box; box-shadow: 0 18px 34px -16px rgba(201, 164, 92, 0.4); }
+.btn.small { min-height: 2.7rem; padding: 0.5rem 1.4rem; }
+.btn:disabled { filter: grayscale(0.85) brightness(0.5); cursor: not-allowed; transform: none; }
+.btn:disabled::after { display: none; }
+.link { background: none; border: 0; padding: var(--s2) 0; color: var(--gold); text-decoration: underline; text-underline-offset: 0.3em; text-decoration-thickness: 1px; font: 400 var(--t-xs) var(--font-body), sans-serif; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; }
+.link:hover { color: var(--gold-hi); }
+
+.field { display: flex; flex-direction: column; gap: var(--s2); }
+.field label, .pills legend { font: 400 var(--t-xs) var(--font-body), sans-serif; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted); }
+.req { text-transform: none; letter-spacing: 0; }
+input, select, textarea {
+  min-height: 3.1rem; padding: 0.5rem 1rem; border-radius: var(--r); border: 1px solid var(--line-hi);
+  background: #050403; box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.8);
+  color: var(--gold-hi); font: inherit; max-width: 100%; transition: border-color 0.2s;
+}
+input:hover, select:hover, textarea:hover, input:focus, select:focus, textarea:focus { border-color: var(--gold); }
+/* Dropdowns: the browser's own arrow is replaced with a fine gold chevron */
+select {
+  appearance: none; -webkit-appearance: none; padding-right: 2.6rem; cursor: pointer;
+  background: #050403 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%23c9a45c' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E") right 1rem center / 0.7rem no-repeat;
+}
+input[type="search"] {
+  padding-left: 2.7rem;
+  background: #050403 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23c9a45c' stroke-width='1.3' stroke-linecap='round'%3E%3Ccircle cx='8.5' cy='8.5' r='6'/%3E%3Cpath d='M13 13l5 5'/%3E%3C/svg%3E") 0.95rem center / 1rem no-repeat;
+}
+/* Quantity: minus and plus either side of the number, inside one gold-edged frame */
+.stepper { display: inline-flex; align-items: stretch; width: fit-content; border-radius: var(--r); border: 1px solid transparent; background: linear-gradient(180deg, #100b08, #050403) padding-box, var(--edge) border-box; box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.8); }
+.stepper input { width: 3.2rem; min-height: 3rem; padding: 0; border: 0; background: none; box-shadow: none; text-align: center; font-weight: 400; -moz-appearance: textfield; appearance: textfield; }
+.stepper input::-webkit-outer-spin-button, .stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.stepper button { width: 2.9rem; border: 0; background: none; color: var(--gold); font: 300 1.3rem / 1 var(--font-body), sans-serif; cursor: pointer; transition: background 0.2s, color 0.2s; }
+.stepper button:hover:not(:disabled) { background: var(--foil-solid); color: #150d06; }
+.stepper button:disabled { opacity: 0.35; cursor: not-allowed; }
+input::placeholder { color: var(--muted); }
+.error { color: #ffb4a8; }
+
+/* 5. Header, footer and page banner */
+/* Optional line across the very top (site.announcement) */
+.announce { margin: 0; padding: 0.55rem var(--s4); text-align: center; font: 400 var(--t-xs) var(--font-body), sans-serif; letter-spacing: 0.28em; text-transform: uppercase; color: #150d06; background: var(--foil-solid); }
+.header { position: sticky; top: 0; z-index: 20; background: rgba(4, 3, 2, 0.78); -webkit-backdrop-filter: blur(18px) saturate(1.4); backdrop-filter: blur(18px) saturate(1.4); box-shadow: 0 10px 30px -18px #000; }
+/* Gold hairline under the header and above the footer */
+.header::after, .footer::before { content: ""; position: absolute; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-lo) 20%, var(--gold-hi) 50%, var(--gold-lo) 80%, transparent); opacity: 0.7; }
+.header::after { bottom: 0; }
+.footer::before { top: 0; }
+.bar { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: var(--s2) var(--s6); padding: var(--s3) 0; }
+.brand { display: inline-flex; align-items: center; gap: var(--s3); margin: 0; }
+.brand-name { display: grid; line-height: 1.1; font: 700 1.05rem var(--font-display), serif; letter-spacing: 0.2em; text-transform: uppercase; white-space: nowrap; }
+.brand-name small { margin-top: 0.3rem; font: 400 0.56rem var(--font-body), sans-serif; letter-spacing: 0.3em; color: var(--muted); }
+.bar-tools { display: flex; align-items: center; gap: var(--s5); }
+/* Account and bag: quiet text buttons with a fine icon */
+.tool { position: relative; display: inline-flex; align-items: center; gap: var(--s2); min-height: 2.75rem; padding: 0; border: 0; background: none; color: var(--cream); font: 400 var(--t-xs) var(--font-body), sans-serif; letter-spacing: 0.22em; text-transform: uppercase; cursor: pointer; transition: color 0.2s; }
+.tool:hover { color: var(--gold-hi); }
+.tool .icon { width: 1.35rem; height: 1.35rem; color: var(--gold); }
+.nav { display: flex; justify-content: center; gap: var(--s6); }
+.nav a { position: relative; padding: 0.6rem 0; white-space: nowrap; font: 400 var(--t-xs) var(--font-body), sans-serif; letter-spacing: 0.26em; text-transform: uppercase; transition: color 0.2s; }
+/* A gold line grows under a menu item on hover, and stays under the current page */
+.nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0.2rem; height: 1px; background: var(--gold); transform: scaleX(0); transition: transform 0.35s; }
+.nav a:hover, .nav a[aria-current] { color: var(--gold-hi); }
+.nav a:hover::after, .nav a[aria-current]::after { transform: scaleX(1); }
+.badge { min-width: 1.25rem; padding: 0 0.3rem; border-radius: 999px; background: var(--foil-solid); color: #150d06; font: 500 0.68rem / 1.25rem var(--font-body), sans-serif; letter-spacing: 0; text-align: center; box-shadow: 0 0 12px rgba(243, 223, 166, 0.55); }
+@media (max-width: 900px) {
+  /* Small screens: brand and tools on the first row, the menu on its own row below. */
+  .bar { grid-template-columns: 1fr auto; column-gap: var(--s4); }
+  .nav { grid-row: 2; grid-column: 1 / -1; justify-content: space-between; gap: var(--s3); }
+  .nav a { letter-spacing: 0.16em; }
+  .bar-tools { gap: var(--s4); }
+  /* Phones: the account and bag buttons show only their icons, to leave room for the name. */
+  .tool span { display: none; }
+}
+@media (max-width: 420px) { .brand-name { font-size: 0.86rem; letter-spacing: 0.14em; } .brand-name small { display: none; } }
+
+.footer { position: relative; overflow: hidden; isolation: isolate; padding: var(--section) 0 var(--s6); font-size: var(--t-sm); background: linear-gradient(180deg, rgba(0, 0, 0, 0.4), var(--brown-deep)); }
+/* A warm glow rising from the bottom corner of the footer */
+.footer::after { content: ""; position: absolute; z-index: -1; right: -10rem; bottom: -16rem; width: 40rem; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(90, 52, 24, 0.55), transparent 65%); pointer-events: none; }
+.foot { display: grid; grid-template-columns: 1.7fr 0.8fr 1fr 1.4fr; gap: var(--s7) var(--s6); }
+.foot h2 { font: 400 var(--t-xs) var(--font-body), sans-serif; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: var(--s4); }
+.foot-brand .brand { margin-bottom: var(--s5); }
+.foot-brand .brand-name { font-size: 1.25rem; }
+.foot-brand p { max-width: 36ch; color: var(--muted); }
+.foot nav a { display: block; padding: var(--s1) 0; }
+.foot nav a:hover { color: var(--gold-hi); }
+.foot .fine { grid-column: 1 / -1; margin: 0; padding-top: var(--s5); border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s3); font-size: var(--t-xs); letter-spacing: 0.2em; text-transform: uppercase; }
+@media (max-width: 900px) { .foot { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .foot { grid-template-columns: 1fr; gap: var(--s6); } }
+
+/* Banner at the top of inner pages: centred, with a brown glow behind and a fine gold frame */
+.page-hero {
+  position: relative; overflow: hidden; isolation: isolate; text-align: center; border-bottom: 1px solid var(--line);
+  padding-block: clamp(3.5rem, 2rem + 6vw, 6.5rem) clamp(3rem, 1.5rem + 5vw, 5rem);
+  background:
+    radial-gradient(ellipse 55% 110% at 50% 115%, rgba(90, 52, 24, 0.75) 0%, rgba(42, 26, 16, 0.5) 42%, transparent 74%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.6), var(--brown-deep));
+}
+/* The fine frame set just inside the hero and the page banners, like the border of a label */
+.page-hero::before, .hero::before { content: ""; position: absolute; inset: clamp(0.6rem, 1.4vw, 1.1rem); z-index: -1; pointer-events: none; border: 1px solid var(--line); }
+.page-hero .title-wrap { margin-inline: auto; }
+.page-hero h1 { font-size: clamp(2.1rem, 1.2rem + 4.2vw, 4rem); max-width: 16ch; }
+.page-hero .eyebrow { margin-bottom: var(--s5); }
+.page-intro { margin: var(--s5) auto 0; max-width: 56ch; font: italic 400 var(--t-xl) / 1.4 var(--font-serif), Georgia, serif; color: var(--gold-hi); }
+.page-intro > :last-child { margin-bottom: 0; }
+
+/* 6. Home */
+.hero {
+  position: relative; overflow: hidden; isolation: isolate; border-bottom: 1px solid var(--line);
+  display: flex; flex-direction: column; justify-content: center; gap: clamp(2rem, 5vw, 4rem);
+  min-height: min(94vh, 940px); padding-block: clamp(3.5rem, 2rem + 5vw, 6.5rem) clamp(2rem, 4vw, 3.5rem);
+  background:
+    radial-gradient(ellipse 60% 62% at 76% 52%, rgba(90, 52, 24, 0.7) 0%, rgba(42, 26, 16, 0.42) 42%, transparent 72%),
+    radial-gradient(ellipse 100% 55% at 50% 122%, var(--brown) 0%, var(--brown-deep) 45%, var(--black) 80%);
+}
+.hero-inner { display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; gap: var(--s6); }
+.hero .title { font-size: var(--t-hero); line-height: 1.02; }
+.hero .title-wrap { margin-bottom: var(--s6); }
+.hero .eyebrow { margin-bottom: var(--s5); }
+.lead { max-width: 46ch; font: 400 var(--t-xl) / 1.45 var(--font-serif), Georgia, serif; margin-bottom: var(--s6); color: var(--cream); }
+/* The artwork leans a few degrees toward the cursor (--tx, --ty come from components/Effects.js) */
+.hero-art-wrap { width: min(100%, 460px); justify-self: center; transform: perspective(900px) rotateY(calc(var(--tx, 0) * 6deg)) rotateX(calc(var(--ty, 0) * -4deg)); transition: transform 0.6s ease-out; }
+.hero-art { width: 100%; display: block; filter: drop-shadow(0 30px 50px rgba(0, 0, 0, 0.7)); }
+.hero-rays { transform-origin: 210px 290px; }
+/* Google rating under the hero buttons (only when one is set in site.config.js) */
+.rating { display: inline-flex; align-items: center; gap: var(--s3); margin-top: var(--s6); font-size: var(--t-sm); letter-spacing: 0.06em; }
+.rating strong { color: var(--gold-hi); font-weight: 500; }
+.stars { position: relative; display: block; line-height: 0; }
+.stars-empty { fill: rgba(201, 164, 92, 0.2); }
+.stars-fill { position: absolute; inset: 0 auto 0 0; overflow: hidden; }
+.stars-full { fill: var(--gold-hi); filter: drop-shadow(0 0 5px rgba(243, 223, 166, 0.7)); }
+/* House details: a slim bar along the bottom of the hero */
+.hero-facts { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; --fill: linear-gradient(160deg, rgba(20, 14, 9, 0.9), rgba(8, 6, 4, 0.9)); }
+.hero-facts li { display: flex; gap: var(--s4); align-items: center; padding: var(--s4) var(--s5); font-size: var(--t-sm); border-left: 1px solid var(--line); }
+.hero-facts li:first-child { border-left: 0; }
+.hero-facts .icon { color: var(--gold); }
+.hero-facts strong { display: block; font: 400 var(--t-xs) var(--font-body), sans-serif; letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold); margin-bottom: var(--s1); }
+.hero-facts a { text-decoration: underline; text-underline-offset: 0.25em; text-decoration-thickness: 1px; }
+/* Mist: a looping video of pale vapour on black. "screen" blending makes the black disappear,
+   and the filter warms the grey vapour to a soft gold. */
+.mist { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; mask-image: linear-gradient(180deg, transparent 0%, #000 24%, #000 70%, transparent 100%); }
+.mist video { width: 100%; height: 100%; object-fit: cover; opacity: 0.36; mix-blend-mode: screen; filter: sepia(1) saturate(1.5) hue-rotate(-12deg) brightness(0.95); }
+@media (max-width: 860px) {
+  .hero { min-height: 0; text-align: center; }
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero .title-wrap, .lead { margin-inline: auto; }
+  .hero .actions { justify-content: center; }
+  /* On small screens the flacon sits behind the text as a faint watermark. */
+  .hero-art-wrap { position: absolute; left: 50%; top: 2rem; width: 340px; translate: -50% 0; opacity: 0.2; z-index: -1; transform: none; }
+  .hero-facts { grid-auto-flow: row; text-align: left; }
+  .hero-facts li { border-left: 0; border-top: 1px solid var(--line); }
+  .hero-facts li:first-child { border-top: 0; }
+}
+
+/* Divider strip: scent notes in italic gold that drift across a dark band (see "marquee" in the motion section) */
+.strip { position: relative; overflow: hidden; background: linear-gradient(180deg, #120b07, #050403); box-shadow: inset 0 1px 0 var(--line-hi), inset 0 -1px 0 var(--line); }
+.strip-track { display: flex; width: max-content; }
+.strip p { margin: 0; flex: none; display: flex; align-items: center; gap: var(--s6); padding: var(--s4) var(--s6) var(--s4) 0; white-space: nowrap; font: italic 400 1.35rem var(--font-serif), Georgia, serif; letter-spacing: 0.06em; }
+.strip span { display: inline-flex; align-items: center; gap: var(--s6); color: var(--gold-hi); }
+.strip span::after { content: ""; width: 5px; height: 5px; rotate: 45deg; background: var(--gold); }
+/* The notes fade out at both ends of the band */
+.strip::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, #050403, transparent 14%, transparent 86%, #050403); }
+
+/* Section headings: small gold label, a large serif title, an optional link on the right, then a gold hairline */
+.section-head { display: grid; grid-template-columns: 1fr auto; align-items: end; column-gap: var(--s5); margin-bottom: var(--s7); padding-bottom: var(--s5); border-bottom: 1px solid transparent; border-image: linear-gradient(90deg, var(--gold), var(--line) 35%, transparent 80%) 1; }
+.section-head .eyebrow { grid-column: 1 / -1; margin-bottom: var(--s3); }
+.section-head h2 { font-size: var(--t-2xl); font-weight: 400; margin: 0; color: var(--cream); }
+/* Centred variant, crowned with the diamond ornament and with no rule beneath */
+.section-head.centered { grid-template-columns: 1fr; justify-items: center; text-align: center; border: 0; padding-bottom: 0; }
+.more-link { padding-bottom: 0.3rem; border-bottom: 1px solid var(--line-hi); color: var(--gold); font: 400 var(--t-xs) var(--font-body), sans-serif; letter-spacing: 0.22em; text-transform: uppercase; white-space: nowrap; transition: color 0.2s, border-color 0.2s; }
+.more-link:hover { color: var(--gold-hi); border-color: var(--gold-hi); }
+/* A full-width band with the quietest wash of brown, to separate one section from the next */
+.band { background: linear-gradient(180deg, transparent, rgba(42, 26, 16, 0.55) 50%, transparent); border-block: 1px solid var(--line); }
+.grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 900px) { .grid.four { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .section-head { grid-template-columns: 1fr; row-gap: var(--s4); } .more-link { justify-self: start; } }
+
+/* Collection tiles: tall panels, numbered in Roman numerals, with the collection's photo behind when it has one */
+.tiles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s5); }
+.tiles.count-1 { grid-template-columns: 1fr; }
+.tiles.count-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.tiles.count-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.tile {
+  min-height: clamp(17rem, 34vw, 26rem); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: var(--s3);
+  padding: var(--s6) var(--s5); text-align: center; overflow: hidden; isolation: isolate; --fill: var(--lacquer-brown); transition: transform 0.35s, box-shadow 0.35s;
+}
+.tiles.count-1 .tile, .tiles.count-2 .tile { min-height: clamp(17rem, 30vw, 22rem); }
+/* A tile with a photo is filled with that photo (--photo is set on the tile in app/page.js), darkened so the name stays readable */
+.tile.has-image { --fill: var(--photo) center / cover no-repeat; }
+.tile::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201, 164, 92, 0.16), transparent 70%); transition: opacity 0.35s; }
+.tile.has-image::before { background: linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.15) 35%, rgba(10, 6, 3, 0.7) 68%, rgba(0, 0, 0, 0.95) 100%); }
+/* A fine inner frame that brightens on hover */
+.tile::after { content: ""; position: absolute; inset: 9px; z-index: -1; border: 1px solid var(--line); transition: border-color 0.35s, inset 0.35s; pointer-events: none; }
+.tile-no { margin-bottom: auto; font: 500 clamp(1.5rem, 3vw, 2.2rem) / 1 var(--font-display), serif; letter-spacing: 0.1em; background: var(--foil); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.tile-name { font: 500 clamp(1.15rem, 0.9rem + 1.4vw, 1.9rem) / 1.2 var(--font-display), serif; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-hi); overflow-wrap: anywhere; }
+.tile.has-image .tile-name { text-shadow: 0 1px 2px #000, 0 0 18px rgba(0, 0, 0, 0.9); }
+.tile-arrow { font: 400 var(--t-xs) var(--font-body), sans-serif; letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold); }
+.tile-arrow span { display: inline-block; transition: transform 0.35s; }
+.tile:hover, .tile:focus-visible { transform: translateY(-4px); --rim: var(--edge-hi); box-shadow: var(--shadow), 0 30px 60px -30px rgba(201, 164, 92, 0.45); }
+.tile:hover::after, .tile:focus-visible::after { border-color: var(--line-hi); inset: 13px; }
+.tile:hover .tile-arrow span { transform: translateX(5px); }
+@media (max-width: 900px) { .tiles, .tiles.count-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .tiles, .tiles.count-2, .tiles.count-3 { grid-template-columns: 1fr; } .tile, .tiles.count-1 .tile, .tiles.count-2 .tile { min-height: 13rem; } }
+
+/* The house: three framed panels, each with its icon in a gold ring */
+.features, .ritual { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s5); }
+.features li, .ritual li { padding: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 3vw, 2.25rem); text-align: center; }
+.features .icon { width: 4rem; height: 4rem; padding: 1rem; border-radius: 50%; border: 1px solid transparent; color: var(--gold-hi); margin: 0 auto var(--s5); background: linear-gradient(160deg, #2a1a10, #0a0806) padding-box, var(--edge-hi) border-box; box-shadow: 0 12px 26px -12px rgba(201, 164, 92, 0.6); }
+.features h3, .ritual h3 { font: 500 var(--t-md) var(--font-display), serif; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: var(--s4); }
+.features p, .ritual p { margin: 0; color: var(--muted); }
+/* The ritual: the same panels, each crowned with a large Roman numeral */
+.ritual li { --fill: var(--lacquer-brown); }
+.numeral { display: block; margin-bottom: var(--s4); font: 500 2.6rem / 1 var(--font-display), serif; background: var(--foil); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.numeral::after { content: ""; display: block; width: 2.5rem; height: 1px; margin: var(--s4) auto 0; background: var(--gold); }
+@media (max-width: 760px) { .features, .ritual { grid-template-columns: 1fr; } }
+
+/* Visit */
+.visit { display: grid; grid-template-columns: 1fr 1.2fr; overflow: hidden; --fill: var(--lacquer-brown); }
+.visit-info { position: relative; padding: clamp(2rem, 5vw, 3.75rem); }
+.visit-info h2 { font-size: var(--t-2xl); font-weight: 400; color: var(--cream); }
+.visit .map { border: 0; border-left: 1px solid var(--line); min-height: 440px; }
+.visit .hours { margin-bottom: var(--s6); }
+.hours { margin: 0; }
+.hours div { display: flex; justify-content: space-between; gap: var(--s4); padding: var(--s3) 0; border-bottom: 1px solid var(--line); }
+.hours dt { color: var(--gold-hi); } .hours dd { margin: 0; text-align: right; }
+@media (max-width: 760px) { .visit { grid-template-columns: 1fr; } .visit .map { border-left: 0; border-top: 1px solid var(--line); min-height: 300px; } }
+
+/* Closing invitation */
+.cta { position: relative; text-align: center; padding-block: var(--section); border-top: 1px solid var(--line); background: radial-gradient(ellipse 60% 120% at 50% 135%, var(--brown-glow) 0%, var(--brown) 32%, var(--brown-deep) 58%, transparent 86%); }
+.cta-line { font: 700 var(--t-hero) / 1.08 var(--font-display), serif; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: var(--s7); text-wrap: balance; }
+/* The second phrase is set in flowing italic, as a signature would be */
+.cta-line em { font-weight: 400; font-size: 1.12em; letter-spacing: 0; text-transform: none; color: var(--gold-hi); }
+.cta .actions { justify-content: center; }
+
+/* 7. Shop */
+.search { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--s4); margin-bottom: var(--s6); padding: var(--s5); }
+.field.grow { flex: 1 1 220px; }
+.chip-rows { margin-bottom: var(--s7); }
+.chips { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s2) var(--s6); margin-bottom: var(--s4); }
+.chips.sub { gap: var(--s2) var(--s5); padding-top: var(--s4); border-top: 1px solid var(--line); }
+/* Collection filters: letter-spaced names; the chosen one is gold with a line beneath */
+.chip { position: relative; display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0.3rem 0; font: 400 var(--t-xs) var(--font-body), sans-serif; letter-spacing: 0.26em; text-transform: uppercase; color: var(--muted); transition: color 0.2s; }
+.chip::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0.4rem; height: 1px; background: var(--gold); transform: scaleX(0); transition: transform 0.35s; }
+.chip:hover, .chip.on { color: var(--gold-hi); }
+.chip:hover::after, .chip.on::after { transform: scaleX(1); }
+
+/* Product cards: the bottle on a dark brown ground, the name in serif, the price in gold */
+.card { padding: var(--s3) var(--s3) var(--s5); display: flex; flex-direction: column; align-items: center; gap: var(--s2); text-align: center; transition: transform 0.35s, box-shadow 0.35s; }
+.card:hover, .card:focus-within { transform: translateY(-5px); --rim: var(--edge-hi); box-shadow: var(--shadow), 0 30px 60px -30px rgba(201, 164, 92, 0.42); }
+.card-link { display: block; width: 100%; }
+.card-media { position: relative; overflow: hidden; margin-bottom: var(--s4); background: radial-gradient(circle at 50% 38%, #3a2416, #150d08 62%, #080504); box-shadow: inset 0 0 0 1px var(--line); }
+/* Photos are never cropped. The whole photo is fitted inside the frame ("contain"), and the empty space
+   around it is filled with a blurred copy of the same photo (set as the frame's background), so a tall
+   or wide photo still sits in a tidy frame without bars or cut-off edges. */
+.fit { background-size: cover; background-position: center; }
+.fit > img { object-fit: contain; -webkit-backdrop-filter: blur(22px) brightness(0.55); backdrop-filter: blur(22px) brightness(0.55); }
+.card img, .ph { width: 100%; aspect-ratio: 4 / 5; transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.card:hover img { transform: scale(1.04); }
+/* Shown when a product has no photo: the brown ground with a faint gold diamond */
+.ph { background: linear-gradient(45deg, transparent 46%, rgba(201, 164, 92, 0.35) 46% 54%, transparent 54%) center / 26px 26px no-repeat, linear-gradient(-45deg, transparent 46%, rgba(201, 164, 92, 0.35) 46% 54%, transparent 54%) center / 26px 26px no-repeat, radial-gradient(circle at 50% 38%, #3a2416, #150d08 62%, #080504); }
+.card h3 { font: 500 1.3rem / 1.25 var(--font-serif), Georgia, serif; color: var(--cream); margin: 0; padding-inline: var(--s2); }
+.card-link:hover h3 { color: var(--gold-hi); }
+.price { margin: 0; color: var(--gold); font: 400 var(--t-sm) var(--font-body), sans-serif; letter-spacing: 0.16em; }
+.card .price { margin-bottom: var(--s4); }
+.card .btn { margin-top: auto; width: calc(100% - var(--s4)); }
+.tag { position: absolute; top: var(--s3); left: var(--s3); padding: 0.25rem 0.7rem; background: rgba(0, 0, 0, 0.85); border: 1px solid var(--line-hi); font: 400 0.62rem var(--font-body), sans-serif; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-hi); }
+.more { text-align: center; margin-top: var(--s7); color: var(--muted); font-size: var(--t-sm); letter-spacing: 0.08em; }
+.skeleton { pointer-events: none; }
+.sk-line { width: 70%; height: 0.9rem; }
+/* While products load: a soft band of light sweeps across each placeholder, like light on foil */
+.skeleton .ph, .sk-line { background: linear-gradient(100deg, rgba(201, 164, 92, 0.05) 30%, rgba(243, 223, 166, 0.2) 50%, rgba(201, 164, 92, 0.05) 70%) 0 0 / 300% 100%, #120c08; }
+.sk-line.short { width: 35%; }
+@media (max-width: 520px) {
+  /* Two compact columns on phones */
+  .grid, .grid.four { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s3); }
+  .card { padding: var(--s2) var(--s2) var(--s4); }
+  .card h3 { font-size: 1.1rem; }
+  .card .btn { width: 100%; padding-inline: var(--s2); letter-spacing: 0.12em; }
+}
+
+/* 8. Product page */
+.product { padding-top: var(--s6); }
+.product h1 { font-family: var(--font-serif), Georgia, serif; font-weight: 500; font-size: clamp(2rem, 1.4rem + 2.6vw, 3.4rem); letter-spacing: 0; line-height: 1.08; }
+.product .title-wrap { margin-bottom: var(--s5); }
+.product .eyebrow { margin-bottom: var(--s3); }
+.crumbs { display: flex; flex-wrap: wrap; gap: var(--s2); margin-bottom: var(--s6); font: 400 var(--t-xs) var(--font-body), sans-serif; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+.crumbs a { color: var(--gold); }
+.crumbs a:hover { color: var(--gold-hi); }
+.crumbs a::after { content: "/"; display: inline-block; margin-left: var(--s2); color: var(--gold-lo); }
+.detail { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.5rem, 5vw, 4.5rem); align-items: start; }
+/* The photo sits on the brown ground inside a double gold frame */
+.gallery .frame, .detail > .ph { overflow: hidden; border: 1px solid var(--line-hi); outline: 1px solid var(--line); outline-offset: 6px; margin: 7px; background-color: #150d08; box-shadow: var(--shadow); }
+.gallery .main, .detail > .ph { width: 100%; aspect-ratio: 4 / 5; }
+.gallery .main { object-fit: contain; }
+.detail > .ph { width: calc(100% - 14px); }
+.thumbs { display: flex; gap: var(--s3); margin: var(--s5) 7px 0; flex-wrap: wrap; }
+.thumbs button { width: 72px; padding: 0; overflow: hidden; background: none; border: 1px solid var(--line); cursor: pointer; opacity: 0.6; transition: opacity 0.2s, border-color 0.2s; }
+.thumbs button:hover, .thumbs button.on { opacity: 1; border-color: var(--gold); }
+.thumbs img { width: 100%; aspect-ratio: 1; object-fit: contain; background: #150d08; }
+.buy { display: grid; gap: var(--s5); padding: clamp(1.5rem, 3vw, 2.25rem); --fill: var(--lacquer-brown); }
+.buy p { margin: 0; }
+.price.big { font: 500 var(--t-2xl) / 1 var(--font-serif), Georgia, serif; letter-spacing: 0.02em; background: var(--foil); -webkit-background-clip: text; background-clip: text; color: transparent; width: fit-content; }
+.stock { font: 400 var(--t-xs) var(--font-body), sans-serif; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); }
+.stock::before { content: ""; display: inline-block; width: 6px; height: 6px; rotate: 45deg; background: var(--gold-hi); box-shadow: 0 0 10px var(--gold-hi); margin-right: var(--s3); vertical-align: 0.1em; }
+.stock.out::before { background: var(--muted); box-shadow: none; }
+.pills { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: var(--s2); min-width: 0; }
+.pills legend { padding: 0; margin-bottom: var(--s3); }
+.pill { position: relative; display: inline-flex; align-items: center; min-height: 2.9rem; padding: 0.4rem 1.2rem; border: 1px solid var(--line-hi); cursor: pointer; font-size: var(--t-sm); letter-spacing: 0.06em; background: rgba(5, 4, 3, 0.6); transition: border-color 0.2s, color 0.2s, background 0.2s; }
+.pill:hover { border-color: var(--gold); color: var(--gold-hi); }
+.pill.on { color: #150d06; border-color: var(--gold-hi); background: var(--foil-solid); font-weight: 400; }
+.pill input { position: absolute; opacity: 0; min-height: 0; }
+.pill:has(:focus-visible) { outline: 1px solid var(--gold-hi); outline-offset: 4px; }
+.buy-row { display: flex; gap: var(--s4); align-items: flex-end; flex-wrap: wrap; }
+.buy-row .btn { flex: 1; }
+.assure { list-style: none; margin: var(--s5) 0 0; padding: 0; display: grid; gap: var(--s3); font-size: var(--t-sm); color: var(--muted); }
+.assure li { display: flex; gap: var(--s3); align-items: center; }
+.assure .icon { width: 1.25rem; height: 1.25rem; color: var(--gold); }
+.assure a { color: var(--cream); text-decoration: underline; text-underline-offset: 0.25em; text-decoration-thickness: 1px; }
+/* The composition: short facts, then the scent pyramid of top, heart and base notes */
+.scent, .desc { margin-top: var(--s6); padding-top: var(--s6); border-top: 1px solid var(--line); }
+.scent h2, .desc h2 { font: 400 var(--t-xs) var(--font-body), sans-serif; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: var(--s5); }
+.facts { margin: 0 0 var(--s5); display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: var(--s4) var(--s5); }
+.facts dt { font: 400 0.66rem var(--font-body), sans-serif; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted); margin-bottom: var(--s1); }
+.facts dd { margin: 0; font: 500 var(--t-lg) var(--font-serif), Georgia, serif; color: var(--gold-hi); }
+.pyramid { list-style: none; margin: 0; padding: 0; display: grid; }
+.pyramid > li { display: grid; grid-template-columns: 11rem 1fr; gap: var(--s2) var(--s5); align-items: start; padding: var(--s4) 0; border-top: 1px solid var(--line); }
+.pyramid > li:first-child { border-top: 0; padding-top: 0; }
+.pyramid h3 { grid-column: 1; margin: 0; font: 500 var(--t-sm) var(--font-display), serif; letter-spacing: 0.16em; text-transform: uppercase; }
+.pyramid .fine { grid-column: 1; margin: 0; font-size: 0.8rem; line-height: 1.4; }
+.pyramid ul { grid-column: 2; grid-row: 1 / span 2; list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s2); }
+.pyramid ul li { padding: 0.3rem 0.9rem; border: 1px solid var(--line-hi); font: italic 400 1.1rem / 1.3 var(--font-serif), Georgia, serif; color: var(--gold-hi); background: rgba(42, 26, 16, 0.5); }
+@media (max-width: 520px) { .pyramid > li { grid-template-columns: 1fr; } .pyramid ul { grid-column: 1; grid-row: auto; margin-top: var(--s2); } }
+.desc { max-width: 60ch; overflow-wrap: anywhere; font: 400 var(--t-lg) / 1.6 var(--font-serif), Georgia, serif; }
+.related { margin-top: var(--section); }
+@media (max-width: 760px) { .detail { grid-template-columns: 1fr; } }
+@media (min-width: 761px) { .detail .gallery, .detail > .ph { position: sticky; top: 6.5rem; } }
+
+/* Phones only: when the main Add to bag button has scrolled away, this bar keeps the price and button in reach */
+.buybar { display: none; }
+@media (max-width: 760px) {
+  .buybar {
+    position: fixed; z-index: 15; left: 0; right: 0; bottom: 0; display: flex; align-items: center; gap: var(--s3);
+    padding: var(--s3) var(--s4) calc(var(--s3) + env(safe-area-inset-bottom)); border-top: 1px solid var(--line-hi);
+    background: rgba(8, 6, 4, 0.9); -webkit-backdrop-filter: blur(16px) saturate(1.4); backdrop-filter: blur(16px) saturate(1.4);
+    transform: translateY(110%); transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1); visibility: hidden;
+  }
+  .buybar.show { transform: none; visibility: visible; }
+  .buybar p { flex: 1; min-width: 0; margin: 0; display: grid; }
+  .buybar span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: 500 1.1rem var(--font-serif), Georgia, serif; }
+  .buybar strong { color: var(--gold); font: 400 var(--t-sm) var(--font-body), sans-serif; letter-spacing: 0.14em; }
+  /* Leave room at the end of the page so the bar never covers the footer text */
+  body:has(.buybar.show) .footer { padding-bottom: 6rem; }
+}
+
+/* Added-to-bag message: a gold-edged card that slides up from the bottom of the screen */
+.toast {
+  position: fixed; z-index: 60; left: 50%; bottom: calc(var(--s5) + env(safe-area-inset-bottom)); width: max-content; max-width: calc(100% - 2rem);
+  display: flex; align-items: center; gap: var(--s4); padding: var(--s3) var(--s3) var(--s3) var(--s4);
+  border: 1px solid transparent; border-radius: var(--r); background: linear-gradient(160deg, #2a1a10, #0a0806) padding-box, var(--edge-hi) border-box;
+  box-shadow: 0 24px 60px -18px #000, 0 0 40px -14px rgba(201, 164, 92, 0.6);
+  transform: translate(-50%, 160%); opacity: 0; visibility: hidden; transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s, visibility 0s 0.4s;
+}
+.toast.open { transform: translate(-50%, 0); opacity: 1; visibility: visible; transition-delay: 0s; }
+.toast p { margin: 0; min-width: 0; display: grid; line-height: 1.3; }
+.toast strong { color: var(--gold-hi); font-weight: 400; }
+.toast p span { max-width: 15rem; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: var(--t-sm); color: var(--muted); }
+.toast-tick { flex: none; display: grid; place-items: center; width: 1.9rem; height: 1.9rem; border-radius: 50%; background: var(--foil-solid); color: #150d06; font-weight: 500; }
+.toast-close { flex: none; width: 2rem; height: 2rem; border: 0; border-radius: 50%; background: none; color: var(--muted); font-size: 1.3rem; line-height: 1; cursor: pointer; }
+.toast-close:hover { color: var(--gold-hi); }
+/* On a product page on a phone, sit above the sticky buy bar */
+@media (max-width: 760px) { body:has(.buybar.show) .toast { bottom: calc(5.5rem + env(safe-area-inset-bottom)); } }
+
+/* 9. Bag */
+.drawer {
+  margin: 0 0 0 auto; height: 100dvh; max-height: none; width: min(440px, 100%); max-width: none; padding: 0;
+  border: 0; border-left: 1px solid var(--line-hi);
+  background: linear-gradient(200deg, #1c120b 0%, #0a0806 45%, #120b07 100%); color: var(--cream); box-shadow: -30px 0 80px -30px #000;
+}
+.drawer::backdrop { background: rgba(0, 0, 0, 0.72); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.drawer-body { display: flex; flex-direction: column; height: 100%; padding: var(--s6) var(--s5); gap: var(--s4); }
+.drawer-head { display: flex; justify-content: space-between; align-items: center; padding-bottom: var(--s4); border-bottom: 1px solid var(--line-hi); }
+.drawer-head h2 { margin: 0; font: 700 var(--t-lg) var(--font-display), serif; letter-spacing: 0.2em; text-transform: uppercase; background: var(--foil); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.cart-empty { flex: 1; display: grid; place-content: center; justify-items: center; gap: var(--s5); text-align: center; }
+.cart-empty .emblem { opacity: 0.6; }
+.cart-empty p { margin: 0; font: italic 400 var(--t-xl) var(--font-serif), Georgia, serif; color: var(--gold-hi); }
+.cart-items { list-style: none; margin: 0; padding: 0; overflow: auto; flex: 1; }
+.cart-items li { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s4); padding: var(--s4) 0; border-bottom: 1px solid var(--line); }
+.cart-items strong { font: 500 1.2rem / 1.3 var(--font-serif), Georgia, serif; color: var(--gold-hi); }
+.cart-opts { display: block; font-size: var(--t-sm); color: var(--muted); }
+.drawer-foot { margin-top: auto; display: grid; gap: var(--s4); }
+.drawer-foot p { margin: 0; }
+.subtotal { display: flex; justify-content: space-between; align-items: baseline; padding-top: var(--s4); border-top: 1px solid var(--line-hi); font: 400 var(--t-xs) var(--font-body), sans-serif; letter-spacing: 0.24em; text-transform: uppercase; }
+.subtotal strong { font: 500 var(--t-xl) var(--font-serif), Georgia, serif; letter-spacing: 0; color: var(--gold-hi); }
+/* Lightspeed's own cart and checkout are designed for a light background, so they sit on an ivory card. */
+.ecwid-host { --fill: linear-gradient(#fbf8f1, #fbf8f1); --rim: var(--edge-hi); color: #000; padding: clamp(1rem, 3vw, 2rem); min-height: 320px; }
+
+/* 10. Other pages */
+.lost { min-height: 72vh; display: grid; place-content: center; justify-items: center; gap: var(--s4); text-align: center; padding-block: var(--section); }
+.lost .emblem { margin-bottom: var(--s4); filter: drop-shadow(0 0 50px rgba(201, 164, 92, 0.45)); }
+.lost h1 { font: 700 var(--t-2xl) var(--font-display), serif; letter-spacing: 0.08em; text-transform: uppercase; margin: 0; }
+.lost .eyebrow { margin: 0; }
+.lost .actions { justify-content: center; margin-top: var(--s4); }
+.photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--s5); }
+.photos img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; box-shadow: var(--shadow), 0 0 0 1px var(--line-hi); }
+.split { display: grid; grid-template-columns: 1.4fr 1fr; gap: clamp(2rem, 6vw, 5rem); align-items: start; }
+.prose { max-width: 60ch; font: 400 var(--t-lg) / 1.7 var(--font-serif), Georgia, serif; }
+.prose .lead { font: italic 400 var(--t-2xl) / 1.25 var(--font-serif), Georgia, serif; max-width: none; color: var(--gold-hi); }
+/* A large gold initial opens the story */
+.prose .lead::first-letter { font: 700 1.9em / 0.9 var(--font-display), serif; float: left; margin: 0.08em 0.06em 0 0; color: var(--gold); }
+.find { display: grid; grid-template-columns: 1fr 1.6fr; gap: var(--s5); }
+/* The map is toned down and warmed slightly so it sits comfortably among the black and gold */
+.map { width: 100%; min-height: 400px; height: 100%; border: 1px solid var(--line-hi); filter: grayscale(0.55) sepia(0.22) brightness(0.9) contrast(1.05); }
+@media (max-width: 760px) { .split, .find { grid-template-columns: 1fr; } }
+
+/* 11. Motion: the hero mist video (see .mist), the floating flacon and its slowly turning sunburst, page titles,
+   the drifting strip of scent notes, a soft fade between pages, hover and cursor-light effects on buttons, cards
+   and tiles, the bag-count bump, and sections rising gently as they scroll into view (only in browsers that
+   support it). Everything is slow and unhurried, and all of it is switched off for visitors who ask for reduced motion. */
+/* Divider strip: slides left by one copy of the list, then repeats. Pauses while the pointer is over it. */
+@keyframes marquee { to { transform: translateX(-50%); } }
+/* Each new page fades in softly. No "fill" is used, so nothing lingers after the fade that could affect fixed bars. */
+@keyframes page-in { from { opacity: 0; transform: translateY(10px); } }
+/* The flacon drifts up and down very slowly, while the sunburst behind it turns. */
+@keyframes float { from { transform: translateY(-7px); } to { transform: translateY(7px); } }
+@keyframes turn { to { transform: rotate(360deg); } }
+/* The bag count gives a small bump when it changes. */
+@keyframes bump { 40% { transform: scale(1.45); } }
+/* Loading placeholders: the band of light moves across. */
+@keyframes shimmer { to { background-position: -300% 0, 0 0; } }
+@keyframes rise { from { opacity: 0; transform: translateY(32px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: no-preference) {
+  .strip-track { animation: marquee 90s linear infinite; }
+  .page-in { animation: page-in 0.6s ease-out; }
+  .hero-art { animation: float 8s ease-in-out infinite alternate; }
+  .hero-rays { animation: turn 240s linear infinite; }
+  .badge { animation: bump 0.45s ease-out; }
+  .skeleton .ph, .sk-line { animation: shimmer 2s linear infinite; }
+  .strip:hover .strip-track { animation-play-state: paused; }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal { animation: rise linear both; animation-timeline: view(); animation-range: entry 0% entry 45%; }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .btn:hover, .card:hover, .card:focus-within, .tile:hover, .tile:focus-visible, .card:hover img { transform: none; }
+}

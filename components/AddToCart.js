@@ -1,0 +1,41 @@
+"use client";
+import { useState } from "react";
+import { toast } from "./Toaster";
+
+// Adds a product to the Ecwid cart (called the "bag" on this site).
+// `options` is an object such as { Size: "100 ml" }, using the option names from Lightspeed.
+// `check` (optional) runs first and can stop the add by returning false, e.g. when a required option is missing.
+export default function AddToCart({ id, name, disabled, options, quantity = 1, large, check }) {
+  const [state, setState] = useState("idle"); // idle | busy | added | error
+
+  function add() {
+    if (check && !check()) return;
+    if (!window.Ecwid?.Cart) return setState("error"); // Ecwid's script has not loaded (or was blocked)
+    setState("busy");
+    window.Ecwid.Cart.addProduct({
+      id,
+      quantity,
+      options: options || {},
+      // Ecwid reports whether the add worked, e.g. it fails when a required option is missing.
+      callback: (success) => {
+        setState(success ? "added" : "error");
+        if (success) {
+          toast("Added to your bag", { detail: name, cart: true });
+          setTimeout(() => setState("idle"), 2500);
+        }
+      },
+    });
+  }
+
+  const label = { idle: "Add to bag", busy: "Adding", added: "Added to bag", error: "Could not add, try again" }[state];
+  return (
+    <button
+      className={large ? "btn" : "btn small"}
+      onClick={add}
+      disabled={disabled || state === "busy"}
+      aria-label={name && state === "idle" && !disabled ? `Add ${name} to bag` : undefined}
+    >
+      <span aria-live="polite">{disabled ? "Unavailable" : label}</span>
+    </button>
+  );
+}
