@@ -11,10 +11,11 @@ const site = {
   scriptHost: "app.business.shop",
   // The ONE Lightspeed category this site sells from. Only products inside it (or inside its subcategories)
   // are ever shown, searched or opened here; the rest of the account's catalog stays invisible.
-  // Use the category's numeric ID (it keeps working if the category is renamed) or its exact name.
-  // 209402405 is the "Ace's Fragrance" category in the Lightspeed admin.
+  // Give the category's name as it appears in the Lightspeed admin. Capitals, spaces and apostrophes do not
+  // matter, so "Aces Fragrance" and "Ace's Fragrance" both work, and the category can be deleted and made
+  // again without touching this file. (A numeric category ID also works, but it changes if the category is remade.)
   // Its subcategories (for example "Colognes" and "Perfumes") become the collections on this site.
-  collection: process.env.ECWID_FRAGRANCE_CATEGORY || "209402405",
+  collection: process.env.ECWID_FRAGRANCE_CATEGORY || "Ace's Fragrance",
 
   url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000", // your live domain, e.g. https://acesfragrance.ca
   currency: "CAD",
