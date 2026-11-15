@@ -390,6 +390,7 @@ input::placeholder { color: var(--muted); }
 /* The ritual: the same panels, each crowned with a large Roman numeral */
 .ritual li { --fill: var(--lacquer-brown); }
 .numeral { display: block; margin-bottom: var(--s4); font: 500 2.6rem / 1 var(--font-display), serif; background: var(--foil); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.numeral img { height: 4.25rem; width: auto; margin-inline: auto; filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.6)); }
 .numeral::after { content: ""; display: block; width: 2.5rem; height: 1px; margin: var(--s4) auto 0; background: var(--gold); }
 @media (max-width: 760px) { .features, .ritual { grid-template-columns: 1fr; } }
 

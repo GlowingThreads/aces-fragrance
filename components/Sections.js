@@ -24,7 +24,7 @@ export function Highlights() {
   );
 }
 
-// "The ritual": numbered steps on wearing fragrance, set in Roman numerals.
+// "The ritual": numbered steps on wearing fragrance, each crowned with a gold Roman numeral.
 const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
 export const roman = (n) => ROMAN[n] || String(n + 1);
 
@@ -33,7 +33,11 @@ export function Ritual() {
     <ol className="ritual">
       {site.ritual.map((step, i) => (
         <li key={step.title} className="reveal">
-          <span className="numeral" aria-hidden="true">{roman(i)}</span>
+          {/* The first three steps use the gold numeral pictures (public/numeral-1.webp to numeral-3.webp,
+              transparent copies of assets/originals/numeral-*.jpg); any further step falls back to lettering. */}
+          <span className="numeral" aria-hidden="true">
+            {i < 3 ? <img src={`/numeral-${i + 1}.webp`} alt="" loading="lazy" /> : roman(i)}
+          </span>
           <h3>{step.title}</h3>
           <p>{step.text}</p>
         </li>
