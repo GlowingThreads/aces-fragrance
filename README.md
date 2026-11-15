@@ -9,6 +9,13 @@ Lightspeed eCom (Ecwid) account.
    public token. They are the same values the main store uses.
 2. `npm install`, then `npm run dev`.
 
+## Hosting (Netlify)
+
+The live site is the Netlify project `acesfragrance`. Its three settings live under
+Project configuration → Environment variables: `NEXT_PUBLIC_ECWID_STORE_ID`, `ECWID_PUBLIC_TOKEN` and
+`NEXT_PUBLIC_SITE_URL`. They are read when the site is built, so after changing one, trigger a new deploy
+(Deploys → Trigger deploy) for it to take effect.
+
 ## Adding fragrances (in Lightspeed)
 
 1. The site sells from the category named **Ace's Fragrance** (set in `site.config.js`; capitals and
