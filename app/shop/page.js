@@ -3,13 +3,18 @@ import site from "../../site.config";
 import { getCollection, getProducts, childrenOf, pathTo, topLevel, SORTS, ecwidReady } from "../../lib/ecwid";
 import ProductGrid from "../../components/ProductGrid";
 import PageHero from "../../components/PageHero";
+import { AUDIENCES, audienceKey } from "../../lib/audience";
 
 export async function generateMetadata({ searchParams }) {
-  const { q } = await searchParams;
+  const params = await searchParams;
+  const q = params.q;
+  const audience = AUDIENCES[audienceKey(params.for)];
   return {
-    title: "The Collection",
-    description: `Shop the ${site.name} collection of signature colognes and luxury perfumes.`,
-    alternates: { canonical: "/shop" },
+    title: audience ? audience.title : "The Collection",
+    description: audience
+      ? `Shop ${audience.title.toLowerCase()} from the ${site.name} collection of signature colognes and luxury perfumes.`
+      : `Shop the ${site.name} collection of signature colognes and luxury perfumes.`,
+    alternates: { canonical: audience ? `/shop?for=${audienceKey(params.for)}` : "/shop" },
     robots: q ? { index: false } : undefined,
   };
 }
@@ -18,22 +23,25 @@ export default async function Shop({ searchParams }) {
   const params = await searchParams;
   const q = typeof params.q === "string" ? params.q.slice(0, 100) : "";
   const sort = params.sort in SORTS ? params.sort : "";
+  const audience = audienceKey(params.for); // "men", "women" or "" for everyone
 
   const collection = await getCollection();
   const { categories } = collection;
   const path = pathTo(categories, Number(params.category) || 0); // empty when no (or an unknown) collection is chosen
   const active = path.at(-1);
-  const { items, total, error } = await getProducts({ categoryId: active?.id, keyword: q, sort });
+  const { items, total, error } = await getProducts({ categoryId: active?.id, keyword: q, sort, audience });
 
   // Query string that keeps the current filter, for chip links and for "View more".
-  const query = (categoryId) => {
+  // `forWho` switches the Men / Women filter; leave it out to keep the current one.
+  const query = (categoryId, forWho = audience) => {
     const qs = new URLSearchParams();
     if (categoryId) qs.set("category", categoryId);
+    if (forWho) qs.set("for", forWho);
     if (q) qs.set("q", q);
     if (sort) qs.set("sort", sort);
     return qs.toString();
   };
-  const href = (categoryId) => `/shop${query(categoryId) ? `?${query(categoryId)}` : ""}`;
+  const href = (categoryId, forWho = audience) => `/shop${query(categoryId, forWho) ? `?${query(categoryId, forWho)}` : ""}`;
 
   // One row of collection chips, then one row of sub-collections for each level of the chosen path.
   const rows = [{ parent: null, list: topLevel(collection) }];
@@ -44,13 +52,17 @@ export default async function Shop({ searchParams }) {
 
   return (
     <>
-    <PageHero eyebrow={active ? "The collection" : site.slogan} title={active ? active.name : "The Collection"}>
+    <PageHero
+      eyebrow={active || audience ? "The collection" : site.slogan}
+      title={active ? (audience ? `${active.name} for ${AUDIENCES[audience].label}` : active.name) : audience ? AUDIENCES[audience].title : "The Collection"}
+    >
       {!error && collection.root && <p>{total} {total === 1 ? "fragrance" : "fragrances"}{q ? ` matching "${q}"` : ""}</p>}
     </PageHero>
     <section className="wrap section">
 
       <form action="/shop" className="search" role="search">
         {active && <input type="hidden" name="category" value={active.id} />}
+        {audience && <input type="hidden" name="for" value={audience} />}
         <div className="field grow">
           <label htmlFor="q">Search</label>
           <input id="q" type="search" name="q" defaultValue={q} placeholder="Search by name or note" />
@@ -65,6 +77,19 @@ export default async function Shop({ searchParams }) {
         </div>
         <button className="btn" type="submit">Apply</button>
       </form>
+
+      <nav aria-label="Filter by who it is for" className="chip-rows">
+        <div className="chips">
+          <Link href={href(active?.id, "")} className={audience ? "chip" : "chip on"} aria-current={audience ? undefined : "true"}>
+            Everyone
+          </Link>
+          {Object.entries(AUDIENCES).map(([key, a]) => (
+            <Link key={key} href={href(active?.id, key)} className={audience === key ? "chip on" : "chip"} aria-current={audience === key ? "true" : undefined}>
+              {a.label}
+            </Link>
+          ))}
+        </div>
+      </nav>
 
       {rows[0].list.length > 0 && (
         <nav aria-label="Collections" className="chip-rows">
@@ -100,7 +125,7 @@ export default async function Shop({ searchParams }) {
           <p>Our catalog is not responding right now. Please try again in a moment, or call us at {site.phone}.</p>
           <a className="btn small" href={href(active?.id)}>Try again</a>
         </div>
-      ) : !collection.root || (items.length === 0 && !q && !active) ? (
+      ) : !collection.root || (items.length === 0 && !q && !active && !audience) ? (
         // The category does not exist yet, or it exists but holds no products so far.
         <div className="notice">
           <h2>The collection is being prepared</h2>

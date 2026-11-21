@@ -28,4 +28,15 @@ Project configuration → Environment variables: `NEXT_PUBLIC_ECWID_STORE_ID`, `
    `Top Notes`, `Heart Notes`, `Base Notes` (comma-separated), and any of `Concentration`, `Scent Family`,
    `Size`, `For`, `Longevity`, `Sillage`, `Season`.
 
+## Men and Women filters
+
+The shop page has **Everyone / Men / Women** filters (`/shop?for=men`, `/shop?for=women`). Unisex scents show
+under both. Each fragrance's audience comes from, in order:
+
+1. A product attribute named `For` or `Gender` in Lightspeed (values like `Men`, `Women`, `Unisex`, `For him`).
+   Set this on any new fragrance and it is filtered correctly with no code change.
+2. Its SKU in `lib/audience.js`, which lists the original 136 fragrances.
+
+A fragrance with neither still shows under Everyone. The same value fills the "For" line on its product page.
+
 Wording, contact details and hours live in `site.config.js`.
